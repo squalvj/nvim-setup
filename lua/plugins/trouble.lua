@@ -9,6 +9,11 @@ return {
       desc = "Diagnostics (Trouble)",
     },
     {
+      "<leader>xq",
+      "<cmd>Trouble qflist toggle<cr>",
+      desc = "Quickfix (Trouble)"
+    },
+    {
       "<leader>xX",
       "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
       desc = "Buffer Diagnostics (Trouble)",

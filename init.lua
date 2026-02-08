@@ -16,6 +16,15 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set("n", "<C-j>", ":m .+1<CR>==", { silent = true })
 vim.keymap.set("n", "<C-k>", ":m .-2<CR>==", { silent = true })
 
+-- Lua mappings example (put in your keymaps)
+vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, { desc = "Go to definition" })
+vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = "Find references" })
+vim.keymap.set('n', 'gi', require('telescope.builtin').lsp_implementations, { desc = "Go to implementation" })
+
+-- Disable case sensitive on search by default
+vim.o.ignorecase = true
+vim.o.smartcase = true
+
 -- Telescope
 require("telescope").load_extension("flutter")
 local builtin = require("telescope.builtin")
@@ -25,6 +34,30 @@ vim.keymap.set('n', '<C-p>', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>', { desc = 'Find diagnostics' })
 
+-- Treesitter
+require'nvim-treesitter'.setup {
+  -- Directory to install parsers and queries to (prepended to `runtimepath` to have priority)
+  install_dir = vim.fn.stdpath('data') .. '/site',
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering a buffer
+  auto_install = true,
+
+  highlight = {
+    enable = true, -- Enable Treesitter highlighting
+    additional_vim_regex_highlighting = false,
+  },
+  indent = { enable = true },
+}
+
+require'nvim-treesitter'.install { 'rust', 'javascript', 'typescript', 'dart' }
+
+-- Force treesitter to start on typescript
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { "typescript", "tsx", "javascript", "lua", "typescriptreact" },
+  callback = function() vim.treesitter.start() end,
+})
+
 -- Flutter telescope keymaps
 vim.keymap.set('n', '<leader>flut', '<cmd>Telescope flutter commands<cr>', { desc = 'Flutter commands' })
 
@@ -32,19 +65,15 @@ vim.keymap.set('n', '<leader>flut', '<cmd>Telescope flutter commands<cr>', { des
 require("neo-tree").setup({
   filesystem = {
     use_libuv_file_watcher = true,  -- Auto-watch filesystem changes
+    follow_current_file = {
+      enabled = true
+    }
   }
 })
 
 vim.keymap.set("n", "<leader>b", ":Neotree toggle<CR>")
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "neo-tree", "Trouble", "help", "qf" },
-  callback = function()
-    vim.opt_local.number = false
-    vim.opt_local.relativenumber = false
-  end,
-})
 -- Bufferline
 vim.opt.termguicolors = true
 require("bufferline").setup{
@@ -112,9 +141,6 @@ require('trouble').setup({
   auto_jump = false,       -- Don't auto-jump when selecting
   focus = true,            -- Auto-focus Trouble when opened
 })
-
-vim.keymap.set('n', '<leader>xx', '<cmd>Trouble diagnostics toggle focus=true<cr>', { desc = 'Diagnostics (Trouble)' })
-vim.keymap.set('n', '<leader>xq', '<cmd>Trouble qflist toggle<cr>', { desc = 'Quickfix (Trouble)' })
 
 -- Lazygit related
 vim.keymap.set('n', '<leader>gg', function()
@@ -247,6 +273,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end, 20)
   end,
 })
+
 
 vim.api.nvim_set_hl(0, "UfoFoldedBg", {
   bg = "#3E3D32", -- Monokai selection bg
