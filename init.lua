@@ -31,10 +31,6 @@ require("neo-tree").setup({
 })
 
 vim.keymap.set("n", "<leader>b", ":Neotree toggle<CR>")
-vim.keymap.set("n", "<leader>g", function()
-  vim.cmd("Neotree float git_status")
-end, { desc = "Git status (current branch)" })
-
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Bufferline
@@ -74,3 +70,5 @@ require('trouble').setup({
 vim.keymap.set('n', '<leader>xx', '<cmd>Trouble diagnostics toggle focus=true<cr>', { desc = 'Diagnostics (Trouble)' })
 vim.keymap.set('n', '<leader>xq', '<cmd>Trouble qflist toggle<cr>', { desc = 'Quickfix (Trouble)' })
 
+-- Lazygit related
+vim.keymap.set('n', '<leader>g', '<cmd>LazyGit<cr>', {})
