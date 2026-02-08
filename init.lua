@@ -5,10 +5,6 @@ vim.cmd("set shiftwidth=2")
 vim.g.mapleader = " "
 require("config.lazy")
 
--- Color scheme
--- require("catppuccin").setup()
--- vim.cmd.colorscheme "catppuccin"
-
 -- Telescope
 local builtin = require("telescope.builtin")
 vim.keymap.set('n', '<C-p>', builtin.find_files, {})
@@ -85,7 +81,15 @@ vim.keymap.set('n', '<leader>gg', function()
   vim.api.nvim_create_autocmd('TermClose', {
     once = true,
     callback = function()
-      vim.cmd('Gitsigns toggle_current_line_blame')
+      vim.defer_fn(function()
+        -- Refresh neo-tree git status properly
+        local ok, events = pcall(require, "neo-tree.events")
+        if ok then
+          events.fire_event(events.GIT_EVENT)
+        end
+        pcall(vim.cmd, 'Gitsigns refresh')
+        pcall(vim.cmd, 'Gitsigns toggle_current_line_blame')
+      end, 150)  -- Slightly longer delay for git operations
     end,
   })
 end, { desc = 'LazyGit' })
