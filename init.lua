@@ -36,6 +36,16 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 -- Bufferline
 vim.opt.termguicolors = true
 require("bufferline").setup{}
+    
+-- Tab to cycle buffers (like browser tabs)
+vim.keymap.set('n', '<Tab>', '<cmd>BufferLineCycleNext<cr>')
+vim.keymap.set('n', '<S-Tab>', '<cmd>BufferLineCyclePrev<cr>')
+    
+-- Pick buffer with letters (super fast!)
+vim.keymap.set('n', '<leader>bb', '<cmd>BufferLinePick<cr>')
+    
+-- Close current buffer
+vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<cr>')
 
 -- LSP configs
 vim.api.nvim_create_autocmd('LspAttach', {
