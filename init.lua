@@ -71,4 +71,27 @@ vim.keymap.set('n', '<leader>xx', '<cmd>Trouble diagnostics toggle focus=true<cr
 vim.keymap.set('n', '<leader>xq', '<cmd>Trouble qflist toggle<cr>', { desc = 'Quickfix (Trouble)' })
 
 -- Lazygit related
-vim.keymap.set('n', '<leader>g', '<cmd>LazyGit<cr>', {})
+vim.keymap.set('n', '<leader>gg', function()
+  -- Disable git blame temporarily
+  -- There is an issue where it couldn't be opened due to GitSigns enabled
+  vim.cmd('Gitsigns toggle_current_line_blame')
+  
+  -- Save if modified
+  if vim.bo.modified then
+    vim.cmd('write')
+  end
+  
+  -- Open LazyGit
+  vim.cmd('LazyGit')
+  
+  -- Re-enable blame after closing (optional)
+  vim.api.nvim_create_autocmd('TermClose', {
+    once = true,
+    callback = function()
+      vim.cmd('Gitsigns toggle_current_line_blame')
+    end,
+  })
+end, { desc = 'LazyGit' })
+
+-- GitSigns related
+vim.keymap.set('n', '<leader>gb', '<cmd>Gitsigns preview_hunk<cr>', {})
