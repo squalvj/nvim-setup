@@ -81,12 +81,22 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- Flutter related
 require("flutter-tools").setup {
+  lsp = {
+    capabilities = {
+      textDocument = {
+        foldingRange = {
+          dynamicRegistration = false,
+          lineFoldingOnly = true,
+        },
+      },
+    },
+  },
   debugger = {
     enabled = true
   },
-  dev_log = {
-    enabled = false
-  }
+  -- dev_log = {
+    -- enabled = false
+  -- }
 } 
 
 -- Trouble related
@@ -127,3 +137,90 @@ end, { desc = 'LazyGit' })
 
 -- GitSigns related
 vim.keymap.set('n', '<leader>gb', '<cmd>Gitsigns preview_hunk<cr>', {})
+
+
+-- Nvim ufo (folding stuff)
+-- Folding core
+vim.opt.foldcolumn = "1"
+vim.opt.foldtext = ""
+vim.opt.fillchars = {
+  fold = " ",
+  foldopen = "",
+  foldclose = "",
+  foldsep = " ", -- critical
+}
+vim.o.foldlevel = 99        -- keep folds open by default
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
+
+-- Optional: cleaner look
+vim.opt.number = false
+vim.opt.relativenumber = false
+
+vim.keymap.set("n", "zR", function()
+  require("ufo").openAllFolds()
+end)
+
+vim.keymap.set("n", "zM", function()
+  require("ufo").closeAllFolds()
+end)
+
+require("ufo").setup({
+  provider_selector = function(_, filetype)
+    if filetype == "dart" then
+      return { "indent" }      -- safe fallback for Dart
+    end
+    return { "lsp", "indent" } -- use LSP where available, indent otherwise
+  end,
+
+  fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
+    local newVirtText = {}
+    local foldedLines = endLnum - lnum
+    local suffix = ("   %d lines"):format(foldedLines)
+    local sufWidth = vim.fn.strdisplaywidth(suffix)
+    local targetWidth = width - sufWidth
+    local curWidth = 0
+
+    for _, chunk in ipairs(virtText) do
+      local chunkText = chunk[1]
+      local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      if curWidth + chunkWidth <= targetWidth then
+        table.insert(newVirtText, chunk)
+        curWidth = curWidth + chunkWidth
+      else
+        local truncated = truncate(chunkText, targetWidth - curWidth)
+        table.insert(newVirtText, { truncated, chunk[2] })
+        curWidth = curWidth + vim.fn.strdisplaywidth(truncated)
+        break
+      end
+    end
+
+    table.insert(newVirtText, { suffix, "UfoFoldedEllipsis" })
+    return newVirtText
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "dart",
+  callback = function()
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldexpr = "v:lua.require'ufo'.foldexpr()"
+
+    -- ensure folds are calculated immediately
+    vim.defer_fn(function()
+      require("ufo").openAllFolds()
+    end, 20)
+  end,
+})
+
+vim.api.nvim_set_hl(0, "UfoFoldedBg", {
+  bg = "#3E3D32", -- Monokai selection bg
+})
+
+vim.api.nvim_set_hl(0, "UfoFoldedFg", {
+  fg = "#E6DB74", -- Monokai yellow
+})
+
+vim.api.nvim_set_hl(0, "UfoFoldedEllipsis", {
+  fg = "#FD971F", -- Monokai orange
+})
