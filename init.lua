@@ -38,6 +38,13 @@ require("neo-tree").setup({
 vim.keymap.set("n", "<leader>b", ":Neotree toggle<CR>")
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "neo-tree", "Trouble", "help", "qf" },
+  callback = function()
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+  end,
+})
 -- Bufferline
 vim.opt.termguicolors = true
 require("bufferline").setup{
@@ -138,24 +145,52 @@ end, { desc = 'LazyGit' })
 -- GitSigns related
 vim.keymap.set('n', '<leader>gb', '<cmd>Gitsigns preview_hunk<cr>', {})
 
+-- Indent blankline
+require("ibl").setup({
+})
 
+-- Statuscol setup
+require("statuscol").setup({
+  setopt = true,
+  segments = {
+    -- fold indicator (uses builtin fold logic)
+    {
+      text = { require("statuscol.builtin").foldfunc },
+      click = "v:lua.ScFa"
+    },
+
+    -- diagnostic & git sign segment
+    {
+      sign = {
+        namespace = { "diagnostic", "gitsigns" },
+        maxwidth = 1,
+        auto = true,
+      },
+      click = "v:lua.ScSa",
+    },
+
+    -- line number
+    {
+      text = { require("statuscol.builtin").lnumfunc, " " },
+      click = "v:lua.ScLa",
+    },
+  },
+})
 -- Nvim ufo (folding stuff)
 -- Folding core
+vim.opt.number = true
+vim.opt.relativenumber = false
 vim.opt.foldcolumn = "1"
 vim.opt.foldtext = ""
 vim.opt.fillchars = {
   fold = " ",
   foldopen = "",
   foldclose = "",
-  foldsep = " ", -- critical
+  foldsep = " ",
 }
 vim.o.foldlevel = 99        -- keep folds open by default
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
-
--- Optional: cleaner look
-vim.opt.number = false
-vim.opt.relativenumber = false
 
 vim.keymap.set("n", "zR", function()
   require("ufo").openAllFolds()
@@ -224,3 +259,4 @@ vim.api.nvim_set_hl(0, "UfoFoldedFg", {
 vim.api.nvim_set_hl(0, "UfoFoldedEllipsis", {
   fg = "#FD971F", -- Monokai orange
 })
+
