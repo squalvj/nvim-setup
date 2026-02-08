@@ -17,17 +17,9 @@ vim.keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>', { desc = 'Fi
 
 -- Neotree
 require("neo-tree").setup({
-  git_status = {
-    window = {
-      mappings = {
-        ["s"] = "git_add_file",
-        ["u"] = "git_unstage_file",
-        ["A"] = "git_add_all",
-        ["c"] = "git_commit",
-        ["S"] = "open_split",
-      },
-    },
-  },
+  filesystem = {
+    use_libuv_file_watcher = true,  -- Auto-watch filesystem changes
+  }
 })
 
 vim.keymap.set("n", "<leader>b", ":Neotree toggle<CR>")
@@ -85,12 +77,7 @@ vim.keymap.set('n', '<leader>gg', function()
   -- Disable git blame temporarily
   -- There is an issue where it couldn't be opened due to GitSigns enabled
   vim.cmd('Gitsigns toggle_current_line_blame')
-  
-  -- Save if modified
-  if vim.bo.modified then
-    vim.cmd('write')
-  end
-  
+
   -- Open LazyGit
   vim.cmd('LazyGit')
   
