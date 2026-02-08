@@ -6,15 +6,27 @@ vim.g.mapleader = " "
 require("config.lazy")
 
 -- Personal keymap
+
+-- === Positioning utilities ===
+-- Center screen when moving with Ctrl+d/u
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+
 -- Move lines up and down
 vim.keymap.set("n", "<C-j>", ":m .+1<CR>==", { silent = true })
 vim.keymap.set("n", "<C-k>", ":m .-2<CR>==", { silent = true })
 
 -- Telescope
+require("telescope").load_extension("flutter")
 local builtin = require("telescope.builtin")
+
+-- Existing keymaps
 vim.keymap.set('n', '<C-p>', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fd', '<cmd>Telescope diagnostics<cr>', { desc = 'Find diagnostics' })
+
+-- Flutter telescope keymaps
+vim.keymap.set('n', '<leader>flut', '<cmd>Telescope flutter commands<cr>', { desc = 'Flutter commands' })
 
 -- Neotree
 require("neo-tree").setup({
@@ -28,11 +40,18 @@ vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- Bufferline
 vim.opt.termguicolors = true
-require("bufferline").setup{}
-    
--- Tab to cycle buffers (like browser tabs)
-vim.keymap.set('n', '<Tab>', '<cmd>BufferLineCycleNext<cr>')
-vim.keymap.set('n', '<S-Tab>', '<cmd>BufferLineCyclePrev<cr>')
+require("bufferline").setup{
+  options = {
+    custom_filter = function(buf_number, buf_numbers)
+      -- Filter out [No Name] buffers
+      local bufname = vim.fn.bufname(buf_number)
+      if bufname == "" then
+        return false
+      end
+      return true
+    end,
+  }
+}
     
 -- Pick buffer with letters (super fast!)
 vim.keymap.set('n', '<leader>bb', '<cmd>BufferLinePick<cr>')
@@ -61,7 +80,14 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 -- Flutter related
-require("flutter-tools").setup {} 
+require("flutter-tools").setup {
+  debugger = {
+    enabled = true
+  },
+  dev_log = {
+    enabled = false
+  }
+} 
 
 -- Trouble related
 require('trouble').setup({
