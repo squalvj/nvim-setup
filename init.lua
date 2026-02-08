@@ -5,6 +5,11 @@ vim.cmd("set shiftwidth=2")
 vim.g.mapleader = " "
 require("config.lazy")
 
+-- Personal keymap
+-- Move lines up and down
+vim.keymap.set("n", "<C-j>", ":m .+1<CR>==", { silent = true })
+vim.keymap.set("n", "<C-k>", ":m .-2<CR>==", { silent = true })
+
 -- Telescope
 local builtin = require("telescope.builtin")
 vim.keymap.set('n', '<C-p>', builtin.find_files, {})
