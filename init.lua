@@ -41,7 +41,7 @@ require'nvim-treesitter'.setup {
   sync_install = false,
 
   -- Automatically install missing parsers when entering a buffer
-  auto_install = true,
+  auto_install = false,
 
   highlight = {
     enable = true, -- Enable Treesitter highlighting
