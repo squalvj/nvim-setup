@@ -273,17 +273,3 @@ vim.api.nvim_create_autocmd("FileType", {
     end, 20)
   end,
 })
-
-
-vim.api.nvim_set_hl(0, "UfoFoldedBg", {
-  bg = "#3E3D32", -- Monokai selection bg
-})
-
-vim.api.nvim_set_hl(0, "UfoFoldedFg", {
-  fg = "#E6DB74", -- Monokai yellow
-})
-
-vim.api.nvim_set_hl(0, "UfoFoldedEllipsis", {
-  fg = "#FD971F", -- Monokai orange
-})
-

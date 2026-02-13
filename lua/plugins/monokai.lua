@@ -10,15 +10,10 @@ return {
     require("monokai-pro").setup({
       override = function(scheme)
         return {
-          typescriptVariable = { fg = scheme.base.orange, bold = true },
-          Normal = { bg = "#000000" },
-          IndentBlanklineChar = { fg = scheme.base.dimmed4 },
-          Keyword = { fg = scheme.base.blue },
-          Constant = { fg = scheme.base.magenta },
-          Function = { fg = scheme.base.green },
+          ["@keyword.type"] = { fg = scheme.base.red }
         }
       end,
-      filter = "spectrum", -- try "machine" or "octagon" if you like
+      filter = "classic", -- try "machine" or "octagon" if you like
     })
     vim.cmd.colorscheme("monokai-pro")
   end,
