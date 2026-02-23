@@ -1,6 +1,10 @@
 return {
   "folke/trouble.nvim",
-  opts = {}, -- for default options, refer to the configuration section for custom setup.
+  opts = {
+    pinned = true,
+    auto_close = true,
+    auto_open = false
+  }, -- for default options, refer to the configuration section for custom setup.
   cmd = "Trouble",
   keys = {
     {

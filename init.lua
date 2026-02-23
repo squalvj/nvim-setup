@@ -96,24 +96,24 @@ vim.keymap.set('n', '<leader>bb', '<cmd>BufferLinePick<cr>')
 vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<cr>')
 
 -- LSP configs
-vim.api.nvim_create_autocmd('LspAttach', {
-  callback = function(args)
-    vim.api.nvim_create_autocmd('BufWritePre', {
-      buffer = args.buf,
-      callback = function()
-        vim.lsp.buf.format({ async = false, bufnr = args.buf })
-      end,
-    })
-  end,
-})
+-- vim.api.nvim_create_autocmd('LspAttach', {
+--   callback = function(args)
+--     vim.api.nvim_create_autocmd('BufWritePre', {
+--       buffer = args.buf,
+--       callback = function()
+--         vim.lsp.buf.format({ async = false, bufnr = args.buf })
+--       end,
+--     })
+--   end,
+-- })
 
 -- LSP Rust related
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'rust',
-  callback = function()
-    vim.lsp.enable('rust-analyzer')
-  end,
-})
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = 'rust',
+--   callback = function()
+--     vim.lsp.enable('rust-analyzer')
+--   end,
+-- })
 
 -- Flutter related
 require("flutter-tools").setup {
@@ -190,7 +190,7 @@ require("statuscol").setup({
       sign = {
         namespace = { "diagnostic", "gitsigns" },
         maxwidth = 1,
-        auto = true,
+        auto = false,
       },
       click = "v:lua.ScSa",
     },
