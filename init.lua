@@ -15,6 +15,8 @@ vim.keymap.set('n', '<C-u>', '<C-u>zz')
 -- Move lines up and down
 vim.keymap.set("n", "<C-j>", ":m .+1<CR>==", { silent = true })
 vim.keymap.set("n", "<C-k>", ":m .-2<CR>==", { silent = true })
+vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", { silent = true })
+vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", { silent = true })
 
 -- Lua mappings example (put in your keymaps)
 vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, { desc = "Go to definition" })
@@ -50,13 +52,13 @@ require'nvim-treesitter'.setup {
   indent = { enable = true },
 }
 
-require'nvim-treesitter'.install { 'rust', 'javascript', 'typescript', 'dart' }
+require'nvim-treesitter'.install { 'rust', 'javascript', 'typescript', 'dart', 'typescriptreact', 'html' }
 
 -- Force treesitter to start on typescript
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { "typescript", "tsx", "javascript", "lua", "typescriptreact" },
-  callback = function() vim.treesitter.start() end,
-})
+--vim.api.nvim_create_autocmd('FileType', {
+--  pattern = { "typescript", "tsx", "javascript", "lua", "typescriptreact" },
+--  callback = function() vim.treesitter.start() end,
+--})
 
 -- Flutter telescope keymaps
 vim.keymap.set('n', '<leader>flut', '<cmd>Telescope flutter commands<cr>', { desc = 'Flutter commands' })
@@ -214,52 +216,10 @@ vim.opt.fillchars = {
   foldclose = "",
   foldsep = " ",
 }
+vim.opt.relativenumber = true
 vim.o.foldlevel = 99        -- keep folds open by default
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
-
-vim.keymap.set("n", "zR", function()
-  require("ufo").openAllFolds()
-end)
-
-vim.keymap.set("n", "zM", function()
-  require("ufo").closeAllFolds()
-end)
-
-require("ufo").setup({
-  provider_selector = function(_, filetype)
-    if filetype == "dart" then
-      return { "indent" }      -- safe fallback for Dart
-    end
-    return { "lsp", "indent" } -- use LSP where available, indent otherwise
-  end,
-
-  fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
-    local newVirtText = {}
-    local foldedLines = endLnum - lnum
-    local suffix = ("   %d lines"):format(foldedLines)
-    local sufWidth = vim.fn.strdisplaywidth(suffix)
-    local targetWidth = width - sufWidth
-    local curWidth = 0
-
-    for _, chunk in ipairs(virtText) do
-      local chunkText = chunk[1]
-      local chunkWidth = vim.fn.strdisplaywidth(chunkText)
-      if curWidth + chunkWidth <= targetWidth then
-        table.insert(newVirtText, chunk)
-        curWidth = curWidth + chunkWidth
-      else
-        local truncated = truncate(chunkText, targetWidth - curWidth)
-        table.insert(newVirtText, { truncated, chunk[2] })
-        curWidth = curWidth + vim.fn.strdisplaywidth(truncated)
-        break
-      end
-    end
-
-    table.insert(newVirtText, { suffix, "UfoFoldedEllipsis" })
-    return newVirtText
-  end,
-})
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "dart",
@@ -273,3 +233,7 @@ vim.api.nvim_create_autocmd("FileType", {
     end, 20)
   end,
 })
+
+-- Theme
+vim.cmd.colorscheme("catppuccin-macchiato")
+
