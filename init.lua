@@ -55,10 +55,10 @@ require'nvim-treesitter'.setup {
 require'nvim-treesitter'.install { 'rust', 'javascript', 'typescript', 'dart', 'typescriptreact', 'html' }
 
 -- Force treesitter to start on typescript
---vim.api.nvim_create_autocmd('FileType', {
---  pattern = { "typescript", "tsx", "javascript", "lua", "typescriptreact" },
---  callback = function() vim.treesitter.start() end,
---})
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { "typescript", "tsx", "javascript", "lua", "typescriptreact" },
+  callback = function() vim.treesitter.start() end,
+})
 
 -- Flutter telescope keymaps
 vim.keymap.set('n', '<leader>flut', '<cmd>Telescope flutter commands<cr>', { desc = 'Flutter commands' })
@@ -220,19 +220,6 @@ vim.opt.relativenumber = true
 vim.o.foldlevel = 99        -- keep folds open by default
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "dart",
-  callback = function()
-    vim.opt_local.foldmethod = "expr"
-    vim.opt_local.foldexpr = "v:lua.require'ufo'.foldexpr()"
-
-    -- ensure folds are calculated immediately
-    vim.defer_fn(function()
-      require("ufo").openAllFolds()
-    end, 20)
-  end,
-})
 
 -- Theme
 vim.cmd.colorscheme("catppuccin-macchiato")
