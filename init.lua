@@ -222,5 +222,5 @@ vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
 -- Theme
-vim.cmd.colorscheme("catppuccin-macchiato")
+-- vim.cmd.colorscheme("catppuccin-macchiato")
 
