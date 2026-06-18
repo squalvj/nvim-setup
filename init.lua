@@ -173,10 +173,6 @@ end, { desc = 'LazyGit' })
 -- GitSigns related
 vim.keymap.set('n', '<leader>gb', '<cmd>Gitsigns preview_hunk<cr>', {})
 
--- Indent blankline
-require("ibl").setup({
-})
-
 -- Statuscol setup
 require("statuscol").setup({
   setopt = true,
